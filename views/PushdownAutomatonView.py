@@ -1,7 +1,7 @@
 import tkinter as tk
 import graphviz
 from tkinter import messagebox, filedialog
-from PushdownAutomaton import PushdownAutomaton  # Importa tu módulo de PDA
+from  controllers.PushdownAutomaton import PushdownAutomaton  # Importa tu módulo de PDA
 
 class PushdownAutomatonView:
     def __init__(self, root):
