@@ -2,7 +2,7 @@ import tkinter as tk
 from automata.fa.dfa import DFA
 # from LanguageType import LanguageType
 from views.LanguageTypeView import LanguageTypeView
-from PushdownAutomatonView import PushdownAutomatonView
+from views.PushdownAutomatonView import PushdownAutomatonView
 
 class MainView:
     def __init__(self, root):
