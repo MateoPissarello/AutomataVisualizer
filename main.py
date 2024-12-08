@@ -2,6 +2,7 @@ import tkinter as tk
 from automata.fa.dfa import DFA
 # from LanguageType import LanguageType
 from views.LanguageTypeView import LanguageTypeView
+from PushdownAutomatonView import PushdownAutomatonView
 
 class MainView:
     def __init__(self, root):
@@ -49,7 +50,8 @@ class MainView:
         print("Reduce Automata")
 
     def pushdown_automata(self):
-        print("Pushdown Automata")
+        # Abrir la vista del Autómata de Pila
+        PushdownAutomatonView(self.root)
 
     def turing_machine(self):
         print("Turing Machine")
