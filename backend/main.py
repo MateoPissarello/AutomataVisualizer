@@ -52,4 +52,6 @@ async def create_automaton(aut_id, string_to_test ):
     steps = automatons[aut_id].test_string(string_to_test)
     return steps
     
+
+
         
