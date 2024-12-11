@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clifford: "#da373d",
+            },
+          },
+        },
+      };
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+    <title>Reducción de Autómatas</title>
+  </head>
+
+  <body>
+    <header class="shadow-lg py-1 mb-5 bg-blue-900 text-white font-md sticky top-0">
+      <div class="caja">
+        <nav class="flex justify-between md:px-48 px-5">
+          <h1 class="text-center font-bold text-lg py-3">
+            <a href="/">Reducción de Autómatas</a>
+          </h1>
+        </nav>
+      </div>
+    </header>
+
+    <main class="sm:px-10">
+      <section>
+        <h2 class="text-lg font-bold text-center mb-5">Reducción de Autómatas</h2>
+
+        <!-- Formulario de Entrada -->
+        <div class="mb-5">
+          <label for="automata-input" class="block text-sm font-medium text-gray-700">Ingrese la representación del autómata:</label>
+          <div id="automata-input" class="block w-full p-2 border border-gray-300 rounded-md bg-gray-100">
+            <div class="mb-2">
+              <label class="font-medium">Q (Estados):</label>
+              <input type="text" id="Q" placeholder="Ej: q0,q1,q2" class="w-full p-2 mt-1 border rounded-md">
+            </div>
+            <div class="mb-2">
+              <label class="font-medium">Σ (Alfabeto):</label>
+              <input type="text" id="alphabet" placeholder="Ej: a,b,c" class="w-full p-2 mt-1 border rounded-md">
+            </div>
+            <div class="mb-2">
+              <label class="font-medium">Estado Inicial:</label>
+              <input type="text" id="initialState" placeholder="Ej: q0" class="w-full p-2 mt-1 border rounded-md">
+            </div>
+            <div class="mb-2">
+              <label class="font-medium">Estados Finales:</label>
+              <input type="text" id="finalStates" placeholder="Ej: q2,q3" class="w-full p-2 mt-1 border rounded-md">
+            </div>
+            <div class="mb-2">
+              <label class="font-medium">Transiciones (δ):</label>
+              <textarea id="transitions" placeholder="Ej: q0,a,q1\nq1,b,q2" rows="5" class="w-full p-2 mt-1 border rounded-md"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-center gap-4">
+          <button onclick="drawInitialAutomaton()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Pintar Automata Inicial
+          </button>
+          <button onclick="drawReducedAutomaton()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Pintar Automata Reducido
+          </button>
+        </div>
+
+        <!-- Contenedores de Visualización -->
+        <div class="flex justify-between mt-5 gap-4">
+          <!-- Contenedor Automata Inicial -->
+          <div id="visualization-initial" class="border p-2 w-1/2">
+            <h3 class="font-bold text-center">Autómata Inicial</h3>
+            <div id="graph-initial" style="height: 300px;"></div>
+          </div>
+
+          <!-- Contenedor Automata Reducido -->
+          <div id="visualization-reduced" class="border p-2 w-1/2">
+            <h3 class="font-bold text-center">Autómata Reducido</h3>
+            <div id="graph-reduced" style="height: 300px;"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <script src="scripts/reduccion.js"></script>
+  </body>
+</html>
