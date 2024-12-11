@@ -1,8 +1,14 @@
 from flask import Flask, request, jsonify, session
-from controllers.PushdownAutomaton import PushdownAutomaton  # Asumimos que la clase PushdownAutomaton está en pushdown_automaton.py
+from PushdownAutomaton import PushdownAutomaton  # Asumimos que la clase PushdownAutomaton está en pushdown_automaton.py
+from flask_cors import CORS
 import uuid
 
+
+
 app = Flask(__name__)
+
+# Habilitar CORS para todos los orígenes
+CORS(app)
 app.secret_key = str(uuid.uuid4())  # Clave secreta para gestionar sesiones
 
 @app.route('/initialize', methods=['POST'])
