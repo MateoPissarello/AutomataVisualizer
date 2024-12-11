@@ -24,6 +24,12 @@
         h3 {
             margin-bottom: 20px;
         }
+        p#instructions {
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: left;
+            line-height: 1.5;
+        }
         input {
             width: 80%;
             padding: 10px;
@@ -51,6 +57,11 @@
 <body>
     <div id="container">
         <h3>¿Es Regular?</h3>
+        <p id="instructions">
+            - Los lenguajes por extensión y finitos deben ser ingresados como un arreglo de cadenas, ejemplo: <code>["abc", "cde", "acc"]</code> para un lenguaje finito y <code>["ab", "aabb", "aaabbb", "..."]</code> para un lenguaje por extensión.<br>
+            - Los lenguajes por extensión deben tener como última cadena <code>"..."</code>.<br>
+            - Los lenguajes por comprensión deben estar definidos como una cadena, siendo mandados entre <code>" "</code>, y cumplir el siguiente formato, ejemplo: <code>"0^n1^n : n >= 1"</code>.
+        </p>
         <input type="text" id="languageInput" placeholder='Ejemplo: ["abc", "cde", "acc"]'>
         <br>
         <button onclick="checkLanguage()">Probar</button>
@@ -78,7 +89,7 @@
                 return;
             }
 
-                        // Realizar la solicitud al backend
+            // Realizar la solicitud al backend
             try {
                 const response = await fetch('http://127.0.0.1:8000/language_type/isregular', {
                     method: 'POST',

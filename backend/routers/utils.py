@@ -13,6 +13,8 @@ def generate_examples(language: Language, max_length: int = 5) -> List[str]:
 
     if isinstance(language, list):
         # Caso 1: Lenguaje finito o definido por extensión
+        if language[-1] == "...":
+            language.pop()
         examples = language[:max_length]
     elif isinstance(language, str):
         # Caso 2: Lenguaje por comprensión
@@ -69,8 +71,8 @@ def check_language(language: Language, p: int = 5):
 
 # Ejemplo de uso
 if __name__ == "__main__":
-    finite_language = ["abc", "cde", "acc"]
-    extension_language = ["ab", "aabb", "aaabbb"]
+    finite_language = ["ab", "aabb", "aaabbb", "..."]
+    extension_language = ["ab", "aabb", "aaabbb", "..."]
     comprehension_language = "0^n1^n : n >= 1"
 
     # Calcular resultados
