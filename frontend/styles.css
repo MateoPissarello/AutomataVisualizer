@@ -1,7 +1,177 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-*{
-  margin: 0;
-  padding: 0;
+:root {
+    --primary-color: #00f2fe;
+    --secondary-color: #4facfe;
+    --accent-color: #7928ca;
+    --background-dark: #0f0c29;
+    --text-light: #e0e0e0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--background-dark), var(--secondary-color), var(--primary-color));
+    background-size: 400% 400%;
+    color: var(--text-light);
+    min-height: 100vh;
+    animation: GradientBackground 15s ease infinite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@keyframes GradientBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    width: 90%;
+    max-width: 1400px;
+    margin: 2rem auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+header {
+    background: rgba(15, 15, 50, 0.7);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 2.8rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+.config-section, .visualization-section {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    transition: transform 0.3s ease;
+}
+
+.config-section:hover, .visualization-section:hover {
+    transform: scale(1.02);
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+}
+
+button {
+    background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+    color: white;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+#visualization {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+#current-state {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+}
+
+.stack-container {
+    margin: 1.5rem 0;
+}
+
+.stack {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 150px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stack-element {
+    background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0;
+    border-radius: 6px;
+    text-align: center;
+    width: 90%;
+}
+
+#transitions-log {
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
+}
+
+#transitions-log li {
+    background: rgba(0, 0, 0, 0.3);
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+    transition: background 0.3s ease;
+}
+
+#transitions-log li:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
 }
