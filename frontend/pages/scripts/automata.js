@@ -280,7 +280,8 @@ function loadStringTestAnimation(){
   document.getElementById("loadStringTestAnimationButton").setAttribute("disabled","")
   console.log(steps);
   
-  let counter = 0
+  animateStep(0); // Ejecuta la función con el elemento actual
+  let counter = 1
   const intervalId = setInterval(() => {
     if (counter >= steps.length) {
         clearInterval(intervalId); // Detiene la ejecución después de n veces
@@ -325,8 +326,8 @@ function animateStep(stepIndex){
     
   }
 
-  document.getElementById("estadoActual").textContent = steps[stepIndex].currState
-  document.getElementById("proximoEstado").textContent = steps[stepIndex].nextState ?? "???"
+  document.getElementById("estadoActual").textContent = currentStep.currState
+  document.getElementById("proximoEstado").textContent = currentStep.nextState ?? "???"
   
   document.getElementById("testStringVisualString").replaceChildren(fragment)
 
