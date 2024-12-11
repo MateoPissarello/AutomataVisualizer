@@ -56,7 +56,7 @@
             </div>
             <div class="mb-2">
               <label class="font-medium">Transiciones (δ):</label>
-              <textarea id="transitions" placeholder="Ej: q0,a,q1\nq1,b,q2" rows="5" class="w-full p-2 mt-1 border rounded-md"></textarea>
+              <textarea id="transitions" placeholder="Ej: (q0,a) -> q0  ó  (qn,z) -> q9 " rows="5" class="w-full p-2 mt-1 border rounded-md"></textarea>
             </div>
           </div>
         </div>
@@ -98,9 +98,9 @@
         <!-- Contenedores de Visualización -->
         <div class="flex justify-between mt-5 gap-4">
           <!-- Contenedor Automata Inicial -->
-          <div id="visualization-initial" class="border p-2 w-full">
+          <div id="visualization-initial" class="border p-2 w-full h-[70vh]">
             <h3 class="font-bold text-center">Autómata Inicial</h3>
-            <div id="graph-initial" style="height: 300px;"></div>
+            <div id="graph-initial" class="h-full"></div>
           </div>
 
 
