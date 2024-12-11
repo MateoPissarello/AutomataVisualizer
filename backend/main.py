@@ -1,12 +1,20 @@
 from fastapi import FastAPI
 from automaton import Automaton
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import json
 from routers import language_type
 
 
 automatons: dict[Automaton] = dict()
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class create_automata(BaseModel):
