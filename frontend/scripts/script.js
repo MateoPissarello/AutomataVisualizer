@@ -71,10 +71,13 @@ function AddNode(idparam = undefined) {
   if (!id) return alert("Agrega un valor al nombre");
   
   if($nodeInitialStateCheckbox.checked){
-    let color = "#ffe633";
+    color = "#ffe633";
   }
   else if($nodeFinalStateCheckbox){
-    let color = "#61ff33";
+    color = "#61ff33";
+  }
+  else{
+    color = "#cccccc";
   }
   try {
     nodes.add({
