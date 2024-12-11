@@ -65,8 +65,17 @@ function AddNode(idparam = undefined) {
   let $nodeInitialStateCheckbox = document.querySelector("input[name='addNodeFinalState']");
   let $nodeFinalStateCheckbox = document.querySelector("input[name='addNodeInitialState']");
   let id = idparam ?? $nodeNameInput.value;
-  if (!id) return alert("Agrega un valor al nombre");
 
+  let color;
+  
+  if (!id) return alert("Agrega un valor al nombre");
+  
+  if($nodeInitialStateCheckbox.checked){
+    let color = "#ffe633";
+  }
+  else if($nodeFinalStateCheckbox){
+    let color = "#61ff33";
+  }
   try {
     nodes.add({
       id,
