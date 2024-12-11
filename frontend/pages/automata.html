@@ -15,46 +15,16 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <title>GPWM | Gráfica de Puntos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+    <title>Autómatas</title>
   </head>
 
   <body>
-    
-    <header
-      class="shadow-lg py-1 mb-5 bg-pink-900 text-white font-md sticky top-0"
-    >
+    <header class="shadow-lg py-1 mb-5 bg-blue-900 text-white font-md sticky top-0">
       <div class="caja">
         <nav class="flex justify-between md:px-48 px-5">
-          <h1 class="flex gap-3 text-center font-bold text-lg py-3">
-            <svg
-              class="w-5"
-              fill="#ffffff"
-              version="1.1"
-              id="Capa_1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 60 60"
-              xml:space="preserve"
-              stroke="#ffffff"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  d="M53,41V29H31V19h7V3H22v16h7v10H7v12H0v16h16V41H9V31h20v10h-7v16h16V41h-7V31h20v10h-7v16h16V41H53z M24,5h12v12H24V5z M14,55H2V43h12V55z M36,55H24V43h12V55z M58,55H46V43h12V55z"
-                ></path>
-              </g>
-            </svg>
-            <a href="/">MODELA TU AUTOMATA</a>
+          <h1 class="text-center font-bold text-lg py-3">
+            <a href="./">Creacion de Autómatas</a>
           </h1>
         </nav>
       </div>
@@ -62,179 +32,83 @@
 
     <main class="sm:px-10">
       <section>
-        <!-- ###################################################### 
-               ########## Botones de la parte superior ############## 
-               ###################################################### -->
-     
+        <h2 class="text-lg font-bold text-center mb-5">Creación de Autómatas</h2>
 
-        <!--###################################################### 
-            ##################### Modals ######################### 
-            ###################################################### -->
-        <section class="modals border border-dashed border-1 border-slate-400 my-5">
-          <!-- Add node -->
-          <form id="add-node-container" class="flex justify-center my-3">
-            <label for="node-name">Nombre del estado</label>
-            <input
-              placeholder="Enter the Node name"
-              name="node-name"
-              id="inputNodeName"
-              class="bg-slate-100 mx-5 py-1 px-2"
-            />
-            <button
-              id="graficarBtn"
-              onclick="AddNode()"
-              class="flex text-white items-center bg-sky-300 hover:bg-sky-400 py-1 px-2 rounded text-center"
-            >
-              <svg
-                class="w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M4.89163 13.2687L9.16582 17.5427L18.7085 8"
-                    stroke="#ffffff"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
-              </svg>
-              Añadir Estado
-            </button>
-            <div>
-              <label for="">Initial State</label>
-              <input type="checkbox" name="addNodeInitialState" id="initialStateCheckbox" >
+        <!-- Formulario de Entrada -->
+        <div class="mb-5">
+          <label for="automata-input" class="block text-sm font-medium text-gray-700">Ingrese la representación del autómata:</label>
+          <div id="automata-input" class="block w-full p-2 border border-gray-300 rounded-md bg-gray-100">
+            <div class="mb-2">
+              <label class="font-medium">Q (Estados):</label>
+              <input type="text" id="Q" placeholder="Ej: q0,q1,q2" class="w-full p-2 mt-1 border rounded-md">
             </div>
-            <div>
-              <label for="">Final State</label>
-              <input type="checkbox" name="addNodeFinalState" id="initialStateCheckbox" >
+            <div class="mb-2">
+              <label class="font-medium">Σ (Alfabeto):</label>
+              <input type="text" id="alphabet" placeholder="Ej: a,b,c" class="w-full p-2 mt-1 border rounded-md">
             </div>
-          </form>
-
-          <!-- Delete node -->
-          <form id="delete-node-container" class="hidden">
-            <div class="flex justify-center gap-10 py-3">
-              <select
-                data="nodes"
-                id="deleteSelectNodes"
-                class="w-40 bg-slate-200 p-1 rounded-md hover:bg-slate-300"
-              ></select>
-              <button
-                id="deleteNode"
-                onClick="DeleteNode()"
-                class="text-white flex items-center bg-red-300 text-sm disabled:bg-slate-200 disabled:hover:bg-slate-200 cursor-pointer hover:bg-red-400 py-2 px-4 rounded-md select-none min-w-30 text-center"
-              >
-                <svg
-                  class="w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path
-                      d="M4.89163 13.2687L9.16582 17.5427L18.7085 8"
-                      stroke="#ffffff"
-                      stroke-width="2.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </g>
-                </svg>
-
-                Delete Node
-              </button>
+            <div class="mb-2">
+              <label class="font-medium">Estado Inicial:</label>
+              <input type="text" id="initialState" placeholder="Ej: q0" class="w-full p-2 mt-1 border rounded-md">
             </div>
-          </form>
-
-          <!-- Add Relation -->
-          
-          <div>
-
-              <p>Agrega las relaciones en la forma</p>
-              <p>
-                <p>(q0 , a) -> q1</p>
-                <p>(q1 , b) -> q2</p>
-                <p>(q2 , c) -> q3</p>
-                Debes tener en cuenta que los estados deben existir previamente
-              </p>
+            <div class="mb-2">
+              <label class="font-medium">Estados Finales:</label>
+              <input type="text" id="finalStates" placeholder="Ej: q2,q3" class="w-full p-2 mt-1 border rounded-md">
+            </div>
+            <div class="mb-2">
+              <label class="font-medium">Transiciones (δ):</label>
+              <textarea id="transitions" placeholder="Ej: q0,a,q1\nq1,b,q2" rows="5" class="w-full p-2 mt-1 border rounded-md"></textarea>
+            </div>
           </div>
-          <textarea name="" id="transicionesTextArea" class="w-96 h-48 p-4  outline outline-2 outline-offset-2" placeholder="Agrega aqui tus transiciones"></textarea>
-          <button
-            action="edit"
-            class="select-none text-sm hover:bg-blue-400 flex items-center gap-2 bg-blue-300 py-2 px-4 rounded-lg text-white hover:cursor-pointer"
-            onclick="parseTransitions()"
-          >
-          
-            Create Transitions
-          </button>
-        </section>
-      </section>
+        </div>
 
-      <!-- ###################################################### 
-            ##################### grafica ######################### 
-            ###################################################### -->
-      <div
-        id="grafica"
-        style="background: radial-gradient(#00002a, #000013)"
-        class="w-full shadow-2xl mx-auto my-3 h-[600px] border border-1 border-solid border-slate-400"
-      ></div>
+        <!-- Botones -->
+        <div class="flex justify-center gap-4">
+          <button onclick="drawInitialAutomaton()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Pintar Automata 
+          </button>
+          <button onclick="showTestStringModule()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Testear cadena 
+          </button>
+        </div>
+
+        <div id="testStringContainer" class="hidden flex flex-col items-center outline-dashed outline-slate-300 py-5 my-3">
+          <p>Ingresa la cadena a probar</p>
+          <input id="testStringInput" type="text" class="h-11 outline outline-gray-200  px-4 py-2" />
+          <p id="serverResponse" class="text-lg font-bold text-black "></p>
+          <button onclick="loadStringTestAnimation()"  id="loadStringTestAnimationButton" class="bg-blue-500  text-white px-4 py-2 my-5 rounded hover:bg-blue-600">
+            Ver visualmente 
+          </button>
+          <div id="testStringVisual" class="my-5">
+            <p id="testStringVisualString"></p>
+            <div class="flex">
+              <div>
+
+                <p class="text-slate-600">Estado actual</p>
+                <p id="estadoActual" class="font-bold"></p>
+              </div>
+
+              <div>
+                <p class="text-slate-600">Estado proximo</p>
+                <p id="proximoEstado" class="font-bold"></p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <!-- Contenedores de Visualización -->
+        <div class="flex justify-between mt-5 gap-4">
+          <!-- Contenedor Automata Inicial -->
+          <div id="visualization-initial" class="border p-2 w-full">
+            <h3 class="font-bold text-center">Autómata Inicial</h3>
+            <div id="graph-initial" style="height: 300px;"></div>
+          </div>
+
+
+        </div>
+      </section>
     </main>
 
-    <footer class="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
-      <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-        <div class="sm:flex sm:items-center sm:justify-between">
-          <a
-            href="https://flowbite.com/"
-            class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
-          >
-            <p>Maestro de grafos</p>
-          </a>
-          <ul
-            class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400"
-          >
-            <li>
-              <a href="#" class="hover:underline me-4 md:me-6">About</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline me-4 md:me-6"
-                >Privacy Policy</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
-            </li>
-            <li>
-              <a href="#" class="hover:underline">Contact</a>
-            </li>
-          </ul>
-        </div>
-        <hr
-          class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8"
-        />
-        <span
-          class="block text-sm text-gray-500 sm:text-center dark:text-gray-400"
-          >© 2023
-          <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>.
-          All Rights Reserved.</span
-        >
-      </div>
-    </footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-    <script src="scripts/script.js"></script>
+    <script src="scripts/automata.js"></script>
   </body>
 </html>

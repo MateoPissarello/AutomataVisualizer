@@ -17,17 +17,37 @@ class Automaton:
     def test_string(self, string:str) -> bool:
         steps  = {
             "accepted":None,
+            "message":"",
             "steps":[]
         }
         currState = self.q0
         for i, char in enumerate(string):
+            
+            if char not in self.alph:
+                steps["accepted"] = False
+                steps["message"] = f"Error: {char} not in alphabet"
+                steps["steps"].append({
+                    "char":char,
+                    "currState": currState,
+                    "nextState": None,
+                    "position": i
+                })
+                return steps
+                
             
             try:
                 nextState = self.transitions[(currState , char)]
                 print(f"({ currState },{ char }) -> {nextState}")
             except Exception: 
                 print(f"Estado muerto ({ currState },{ char })")
+                steps["steps"].append({
+                    "char":char,
+                    "currState": currState,
+                    "nextState": None,
+                    "position": i
+                })
                 steps["accepted"] = False
+                steps["message"] = f"Estado muerto ({ currState },{ char }) -> ?"
                 return steps
             
             if nextState:
@@ -42,9 +62,11 @@ class Automaton:
                 
             
         if currState in self.F:
+            steps["message"] = f"Cadena aceptada"
             steps["accepted"] = True
             return steps
         else:
+            steps["message"] = f"Cadena NO aceptada"
             steps["accepted"] = False
             return steps
         
