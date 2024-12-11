@@ -280,37 +280,40 @@
         const BASE_URL = "http://localhost:8000"; // Dirección del servidor backend
 
         function initializePDA() {
-            const language = document.getElementById('language').value.trim();
-            const inputString = document.getElementById('input-string').value.trim();
+            const language_type = document.getElementById('language').value.trim();
+            const input_string = document.getElementById('input-string').value.trim();
+            let aut_id = 0
 
-            if (language === "" || inputString === "") {
+            if (language_type === "" || input_string === "") {
                 alert("Por favor, ingresa tanto el lenguaje como la cadena de entrada.");
                 return;
             }
 
-            fetch(`${BASE_URL}/initializePDA`, {
+            fetch(`${BASE_URL}/pushdown/initialize/${aut_id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ language, inputString }),
+                body: JSON.stringify({ language_type, input_string }),
             })
             .then(response => response.json())
             .then(data => {
                 updateVisualization(data);
             })
             .catch(error => console.error('Error al generar el autómata:', error));
+
+            aut_id += 1
         }
 
         function processInput() {
-            const inputString = document.getElementById('input-string').value;
+            const input_string = document.getElementById('input-string').value;
 
             fetch(`${BASE_URL}/processInput`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ inputString }),
+                body: JSON.stringify({ input_string }),
             })
             .then(response => response.json())
             .then(data => {
