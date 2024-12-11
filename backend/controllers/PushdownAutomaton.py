@@ -1,3 +1,7 @@
+import asyncio
+import websockets
+import json
+
 class PushdownAutomaton:
     def __init__(self):
         """
@@ -17,7 +21,7 @@ class PushdownAutomaton:
         Inicializa el autómata para un tipo de lenguaje específico.
         """
         self.reset()
-        
+
         # Configuración según el tipo de lenguaje
         if language_type.lower() == 'a^n b^n':
             self._setup_balanced_language(input_string)
@@ -27,7 +31,7 @@ class PushdownAutomaton:
             self._setup_four_characters_language(input_string)  # Nuevo lenguaje
         else:
             raise ValueError(f"Lenguaje no soportado: {language_type}")
-        
+
         self.input_string = list(input_string)
         return self
 
@@ -97,9 +101,9 @@ class PushdownAutomaton:
         """
         if symbol is not None:
             self.input_string.append(symbol)
-        
+
         result = self._process_symbol()
-        
+
         return type('ProcessResult', (), {
             'current_state': self.current_state,
             'stack': self.stack.copy(),
@@ -115,29 +119,29 @@ class PushdownAutomaton:
 
         symbol = self.input_string.pop(0)
         stack_top = self.stack[-1] if self.stack else 'Z0'
-        
+
         # Buscar transición válida
         key = (self.current_state, symbol, stack_top)
         transitions = self.transitions.get(key, [])
-        
+
         if not transitions:
             raise ValueError(f"Transición no válida: {key}")
-        
+
         # Tomar la primera transición (puede extenderse para múltiples)
         transition = transitions[0]
-        
+
         # Actualizar estado y pila
         self.current_state = transition['next_state']
-        
+
         if stack_top != 'Z0':  # Solo desapilar si no es el símbolo base 'Z0'
             self.stack.pop()  # Desapilar un símbolo
-        
+
         # Apilar nuevos símbolos (en reversa)
         self.stack.extend(reversed(transition['stack_push']))  # Apilar los nuevos símbolos
 
         # Registrar transición
         self.transition_log.append([f"{self.current_state}", f"Symbol: {symbol}", f"Stack: {self.stack}"])
-        
+
         return True
 
     def reset(self):
@@ -145,36 +149,49 @@ class PushdownAutomaton:
         Reinicia el estado del autómata.
         """
         self.current_state = self.start_state
-        self.stack = ['Z0']  # La pila comienza con el símbolo base 'Z0'
-        self.input_string = []
-        self.transition_log = []
-
-    def is_accepted(self):
-        """
-        Verifica si la cadena es aceptada.
-        """
-        # Se puede aceptar el lenguaje si la pila está vacía o contiene un único símbolo base
-        return (not self.input_string and 
-                self.current_state in self.final_states)
+        self.stack = ['Z0']
 
     def add_state(self, state, is_initial=False, is_final=False):
+        """
+        Agrega un estado al autómata.
+        """
         self.states.add(state)
-        
         if is_initial:
-            if self.start_state:
-                raise ValueError(f"Ya existe un estado inicial: {self.start_state}")
             self.start_state = state
-            self.current_state = state
-
         if is_final:
             self.final_states.add(state)
 
-    def add_transition(self, current_state, input_symbol, stack_top, next_state, stack_push):
-        key = (current_state, input_symbol, stack_top)
+    def add_transition(self, from_state, symbol, stack_top, to_state, stack_push):
+        """
+        Agrega una transición al autómata.
+        """
+        key = (from_state, symbol, stack_top)
         if key not in self.transitions:
             self.transitions[key] = []
+        self.transitions[key].append({'next_state': to_state, 'stack_push': stack_push})
 
-        self.transitions[key].append({
-            'next_state': next_state, 
-            'stack_push': stack_push
-        })
+async def handle_client(websocket, path):
+    aut = PushdownAutomaton()
+
+    # Inicializar autómata con lenguaje y cadena recibidos del cliente
+    async for message in websocket:
+        data = json.loads(message)
+        language_type = data['language_type']
+        input_string = data['input_string']
+
+        aut.initialize(language_type, input_string)
+
+        response = aut.process()
+
+        # Enviar estado actual, pila y transiciones al cliente
+        await websocket.send(json.dumps({
+            'current_state': response.current_state,
+            'stack': response.stack,
+            'transitions': response.transitions
+        }))
+
+async def main():
+    server = await websockets.serve(handle_client, "localhost", 8000)
+    await server.wait_closed()
+
+asyncio.run(main())

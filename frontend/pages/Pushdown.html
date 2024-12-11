@@ -277,75 +277,84 @@
     </div>
 
     <script>
-        const BASE_URL = "http://localhost:8000"; // Dirección del servidor backend
+        const BASE_WS_URL = "ws://localhost:8000"; // o wss:// si es conexión segura
 
         function initializePDA() {
             const language_type = document.getElementById('language').value.trim();
             const input_string = document.getElementById('input-string').value.trim();
-            let aut_id = 0
+            let aut_id = 0;
 
             if (language_type === "" || input_string === "") {
                 alert("Por favor, ingresa tanto el lenguaje como la cadena de entrada.");
                 return;
             }
 
-            fetch(`${BASE_URL}/pushdown/initialize/${aut_id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ language_type, input_string }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateVisualization(data);
-            })
-            .catch(error => console.error('Error al generar el autómata:', error));
+            // Usando WebSocket
+            const socket = new WebSocket(`${BASE_WS_URL}/pushdown/initialize/${aut_id}`);
 
-            aut_id += 1
+            socket.onopen = () => {
+                console.log('Conexión WebSocket establecida');
+                socket.send(JSON.stringify({ language_type, input_string }));
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateVisualization(data);
+            };
+
+            socket.onerror = (error) => {
+                console.error('Error de WebSocket:', error);
+            };
+
+            socket.onclose = () => {
+                console.log('Conexión WebSocket cerrada');
+            };
+
+            aut_id += 1;
         }
 
         function processInput() {
             const input_string = document.getElementById('input-string').value;
 
-            fetch(`${BASE_URL}/processInput`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ input_string }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateVisualization(data); // Actualizar la visualización con el resultado
-            })
-            .catch(error => console.error('Error al procesar la cadena:', error));
+            const socket = new WebSocket(`${BASE_WS_URL}/processInput`);
+
+            socket.onopen = () => {
+                socket.send(JSON.stringify({ input_string }));
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                updateVisualization(data);
+            };
+
+            socket.onerror = (error) => {
+                console.error('Error de WebSocket:', error);
+            };
+
+            socket.onclose = () => {
+                console.log('Conexión WebSocket cerrada');
+            };
         }
 
         function updateVisualization(data) {
-            // Actualiza el estado y la pila con los datos del autómata
-            const currentStateElement = document.getElementById("current-state");
-            const stackVisualizationElement = document.getElementById("stack-visualization");
-            const transitionsLogElement = document.getElementById("transitions-log");
+            document.getElementById("current-state").textContent = data.current_state;
+            updateStack(data.stack);
+            updateTransitionsLog(data.transitions);
+        }
 
-            currentStateElement.textContent = data.currentState;
-            stackVisualizationElement.innerHTML = data.stack.join('<br>');
-            
-            // Mostrar transiciones en el log
-            transitionsLogElement.innerHTML = "";
-            data.transitions.forEach(transition => {
+        function updateStack(stack) {
+            const stackDiv = document.getElementById("stack-visualization");
+            stackDiv.innerHTML = stack.join(" ");
+        }
+
+        function updateTransitionsLog(transitions) {
+            const logDiv = document.getElementById("transitions-log");
+            logDiv.innerHTML = "";
+            transitions.forEach(transition => {
                 const li = document.createElement("li");
                 li.textContent = transition;
-                transitionsLogElement.appendChild(li);
+                logDiv.appendChild(li);
             });
-        }
-
-        function openInstructions() {
-            document.getElementById('instructionsModal').style.display = 'block';
-        }
-
-        function closeInstructions() {
-            document.getElementById('instructionsModal').style.display = 'none';
         }
     </script>
 </body>
