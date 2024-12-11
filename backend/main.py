@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
@@ -20,6 +20,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -88,33 +89,50 @@ async def test_string_route(aut_id: str, string_to_test: str):
 
 # ============================== Autómata de Pila (PushdownAutomaton) ==============================
 
-
-# Modelo para crear un autómata de pila
-class create_pushdown_automaton(BaseModel):
+# Modelo para inicializar un autómata de pila
+class CreatePushdownAutomaton(BaseModel):
     aut_id: str
-    language_type: str  # Acepta tipos como 'a^n b^n', 'a^n b^n c^n', etc.
+    language_type: str  # 'a^n b^n', 'a^n b^n c^n', etc.
     input_string: str
 
-
-@app.post("/pushdown/initialize/{aut_id}", status_code=status_code.HTTP_201_CREATED)
-async def initialize_pushdown_automat(
-    aut_id: str = Path(...),
-    create_pushdown_automaton: create_pushdown_automaton = Body(...),
-):
-    try:
-        pda = PushdownAutomaton()
-        language_type = create_pushdown_automaton.language_type
-        input_string = create_pushdown_automaton.input_string
-
-        pda.initialize(language_type, input_string)
-
-        pda_automatons[create_pushdown_automaton.aut_id] = pda
-
-        return {"message": "Autómata de Pila inicializado correctamente!"}
-    except Exception as e:
-        return {"error": str(e)}
+# Ruta para inicializar el autómata
+@app.post('/initialize/pushdown', status_code=201)
+async def initialize(data: CreatePushdownAutomaton):
+    if data.aut_id in pda_automatons:
+        raise HTTPException(status_code=400, detail="El autómata ya existe con este ID.")
     
+    pda = PushdownAutomaton()
+    try:
+        pda.initialize(data.language_type, data.input_string)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    pda_automatons[data.aut_id] = pda
+    return {"status": "initialized", "aut_id": data.aut_id}
 
-@app.post("/pushdown/process/{aut_id}")
-async def process_pushdown()
-    ...
+# Ruta para procesar un símbolo
+@app.post('/process/pushdown/{aut_id}')
+async def process(aut_id: str, symbol: str = None):
+    pda = pda_automatons.get(aut_id)
+    if not pda:
+        raise HTTPException(status_code=404, detail="Autómata no encontrado.")
+    
+    try:
+        result = pda.process(symbol)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    return {
+        "current_state": result.current_state,
+        "stack": result.stack,
+        "transitions": result.transitions,
+    }
+
+# Ruta para verificar aceptación
+@app.get('/accepted/pushdown/{aut_id}')
+async def is_accepted(aut_id: str):
+    pda = pda_automatons.get(aut_id)
+    if not pda:
+        raise HTTPException(status_code=404, detail="Autómata no encontrado.")
+    
+    return {"is_accepted": pda.is_accepted()}
