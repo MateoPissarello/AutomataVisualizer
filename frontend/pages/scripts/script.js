@@ -2,12 +2,14 @@
 let addQueue = [];
 let relationsList = [];
 
-
+let transitions = {};
 
 
 let $canvas = document.getElementById("grafica");
 
 const nodes = new vis.DataSet();
+const states = [];
+
 const edges = new vis.DataSet();
 const data = { nodes, edges };
 const options = {
@@ -35,29 +37,6 @@ document.querySelectorAll("form button").forEach((item) => {
   });
 });
 
-$canvas.addEventListener("click",()=>{
-  console.log(network.getSelectedEdges().length);
-
-  if(network.getSelectedEdges().length > 0 ){
-    document.getElementById("deleteRelationButton").disabled = false
-  }
-  else   document.getElementById("deleteRelationButton").disabled = true
-
-})
-
-
-
-function ActiveButton(action, value = true) {
-  if (action == "edit")
-    document.querySelector("button[action='edit']").disabled = !value;
-  if (action == "delete")
-    document.querySelector("button[action='delete']").disabled = !value;
-  if (action == "addRelation")
-    document.querySelector("button[action='addRelation']").disabled = !value;
-  if (action == "deleteRelation")
-    document.querySelector("button[action='deleteRelation']").disabled = !value;
-}
-
 
 
 function AddNode(idparam = undefined) {
@@ -66,19 +45,21 @@ function AddNode(idparam = undefined) {
   let $nodeFinalStateCheckbox = document.querySelector("input[name='addNodeInitialState']");
   let id = idparam ?? $nodeNameInput.value;
 
-  let color;
+  if(states.indexOf(id) == -1){
+    states.push(id)
+  }
+
+  let color = "#cccccc";
   
   if (!id) return alert("Agrega un valor al nombre");
   
   if($nodeInitialStateCheckbox.checked){
     color = "#ffe633";
   }
-  else if($nodeFinalStateCheckbox){
+  if($nodeFinalStateCheckbox.checked){
     color = "#61ff33";
   }
-  else{
-    color = "#cccccc";
-  }
+
   try {
     nodes.add({
       id,
@@ -94,9 +75,6 @@ function AddNode(idparam = undefined) {
     }
 
     addQueue.push(id);
-    ActiveButton("edit");
-    ActiveButton("delete");
-    ActiveButton("addRelation");
     UpdateSelects();
   } catch {
     alert("El nodo ya existe!");
@@ -107,64 +85,9 @@ function AddNode(idparam = undefined) {
   $nodeNameInput.value = "";
 }
 
-function EditNode() {
-  const NodeId = document.getElementById("edit-select-node").value;
-  const NewName = document.getElementById("editInputNodeName").value;
-  
-
-  let index = addQueue.indexOf(NodeId);
-
-  let yArray = [...relationsList].splice(index, 1);
-
-  let xArray = [];
-  let copy = [...relationsList];
-
-  for (let i = 0; i < copy.length; i++) {
-    xArray.push(copy[i][index]);
-  }
-
-  relationsList.slice(index, 1);
-  relationsList.push(...relationsList.splice(index, 1));
-  relationsList.forEach((item, i) => {
-    item.push(...item.splice(index, 1));
-  });
- 
-  addQueue.splice(index,1)
-  addQueue.push(NewName)
-
-  nodes.remove(NodeId)
-  AddNode(NewName)
-  DrawRelations()
-  
-  
-}
-
-function DeleteNode(id = undefined) {
-  let NodeId = id ?? document.getElementById("deleteSelectNodes").value
-  
-  let indexInQueue = addQueue.indexOf(NodeId);
-  relationsList.splice(indexInQueue, 1);
-
-  relationsList.forEach((arr) => arr.splice(indexInQueue, 1));
-  nodes.remove(NodeId)
-  addQueue = addQueue.filter( item => item != NodeId);
-
-  if(addQueue.length === 0){
-    ActiveButton("edit", false)
-    ActiveButton("addRelation", false)
-    ActiveButton("delete", false)
-    showDeleteNodeModal()
-  }
-
-  DrawRelations();
-  UpdateSelects();
-}
 
 
-function AddRelation() {
-  let from = document.getElementById("from-relation").value;
-  let to = document.getElementById("to-relation").value;
-  let value = document.getElementById("adding-relation-name").value;
+function AddRelation(from, to, value) {
 
   if (!value) return alert("Por favor ingresa un valor valido en valor");
   //alt 789 -> "§"
@@ -222,66 +145,45 @@ function UpdateSelects() {
 
 
 
-// [add, edit, delete, addRelation,delRelation]
-let visible = [0, 0, 0, 0, 0 ];
-let actionsbuttons = document.querySelector(".actions").children;
 
-function showAddNodeModal() {
-  let actions = document.querySelector(".modals").children;
-  //visible
-  if (visible[0]) {
-    actions[0].classList.add("hidden");
-    visible = [0, 0, 0, 0 ];
-    return;
-  }
-  actions[0].classList.remove("hidden");
-  actions[1].classList.add("hidden");
-  actions[2].classList.add("hidden");
-  actions[3].classList.add("hidden");
-  visible = [1, 0, 0, 0];
-}
-function showEditNodeModal() {
-  let actions = document.querySelector(".modals").children;
-  //visible
-  if (visible[1]) {
-    actions[1].classList.add("hidden");
-    visible = [0, 0, 0, 0];
-    return;
-  }
-  actions[0].classList.add("hidden");
-  actions[1].classList.remove("hidden");
-  actions[2].classList.add("hidden");
-  actions[3].classList.add("hidden");
-  visible = [0, 1, 0 , 0];
-}
 
-function showDeleteNodeModal() {
-  let actions = document.querySelector(".modals").children;
-  //visible
-  if (visible[2]) {
-    visible = [0, 0, 0,0];
-    actions[2].classList.add("hidden");
-    return;
+function parseTransitions() {
+  // Obtener el contenido del textarea
+  const text = document.getElementById("transicionesTextArea").value;
+
+  // Crear un objeto para almacenar las transiciones
+  transitions = {};
+
+  // Usar una expresión regular para encontrar todas las transiciones
+  const regex = /\(\s*([a-zA-Z]+\d+)\s*,\s*([a-zA-Z])\s*\)\s*->\s*(q\d+)/g;
+  let match;
+
+  // Iterar sobre todas las coincidencias
+  while ((match = regex.exec(text)) !== null) {
+    const fromState = match[1];  // Estado de origen (q0, q1, q2, ...)
+    if( states.indexOf(fromState) == -1 ){
+      alert("El estado " +  fromState + " no ha sido creado aun")
+      continue
+    }
+    const char = match[2];       // Carácter (a, b, c, ...)
+    const toState = match[3];    // Estado de destino (q1, q2, q3, ...)
+
+    // Asegurarse de que el estado de origen exista en el objeto
+    if (!transitions[fromState]) {
+      transitions[fromState] = [];
+    }
+
+    AddRelation(fromState, toState, char)
+    // Agregar la transición al estado de origen
+    transitions[fromState].push({
+      char: char,
+      to: toState
+    });
   }
-  actions[0].classList.add("hidden");
-  actions[1].classList.add("hidden");
-  actions[2].classList.remove("hidden");
-  actions[3].classList.add("hidden");
-  visible = [0, 0, 1, 0];
+
 }
 
 
-function showAddRelationModal(){
-  let actions = document.querySelector(".modals").children;
-  //visible
-  if (visible[3]) {
-    visible = [0, 0, 0, 0];
-    actions[3].classList.add("hidden");
-    return;
-  }
-  actions[0].classList.add("hidden");
-  actions[1].classList.add("hidden");
-  actions[2].classList.add("hidden");
-  actions[3].classList.remove("hidden");
-  visible = [0, 0, 0 , 1];
-}
+
+
+

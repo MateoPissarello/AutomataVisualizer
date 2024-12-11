@@ -15,7 +15,6 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"
@@ -66,177 +65,14 @@
         <!-- ###################################################### 
                ########## Botones de la parte superior ############## 
                ###################################################### -->
-        <div
-          class="actions flex justify-center mx-auto gap-x-5 gap-y-2 flex-wrap"
-        >
-          <div
-            class="select-none text-sm hover:bg-green-400 disabled:hover:bg-slate-300 disabled:bg-slate-300 flex items-center gap-2 bg-green-300 py-2 px-4 rounded-lg text-white"
-            onclick="showAddNodeModal()"
-          >
-            <svg
-              class="w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              stroke="#ffffff"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  d="M6 12H18M12 6V18"
-                  stroke="#ffffff"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </g>
-            </svg>
-            Add State
-          </div>
-          <button
-            disabled
-            action="edit"
-            class="select-none text-sm hover:bg-blue-400 disabled:hover:bg-slate-300 disabled:bg-slate-300 flex items-center gap-2 bg-blue-300 py-2 px-4 rounded-lg text-white"
-            onclick="showEditNodeModal()"
-          >
-            <svg
-              class="w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  d="M9.65661 17L6.99975 17L6.99975 14M6.10235 14.8974L17.4107 3.58902C18.1918 2.80797 19.4581 2.80797 20.2392 3.58902C21.0202 4.37007 21.0202 5.6364 20.2392 6.41745L8.764 17.8926C8.22794 18.4287 7.95992 18.6967 7.6632 18.9271C7.39965 19.1318 7.11947 19.3142 6.8256 19.4723C6.49475 19.6503 6.14115 19.7868 5.43395 20.0599L3 20.9998L3.78312 18.6501C4.05039 17.8483 4.18403 17.4473 4.3699 17.0729C4.53497 16.7404 4.73054 16.424 4.95409 16.1276C5.20582 15.7939 5.50466 15.4951 6.10235 14.8974Z"
-                  stroke="#ffffff"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </g>
-            </svg>
-            Edit Node
-          </button>
-          <button
-            disabled
-            action="delete"
-            class="select-none text-sm hover:bg-red-500 disabled:hover:bg-slate-300 disabled:bg-slate-300 flex items-center gap-2 bg-red-400 py-2 px-4 rounded-lg text-white"
-            onclick="showDeleteNodeModal()"
-          >
-            <svg
-              class="text-md w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              stroke="#ffffff"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  d="M10 12L14 16M14 12L10 16M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
-                  stroke="#ffffff"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </g>
-            </svg>
-
-            Delete Node
-          </button>
-          <button
-            id="buttonAddRelation"
-            disabled
-            action="addRelation"
-            onclick="showAddRelationModal()"
-            class="select-none text-sm hover:bg-amber-500 disabled:hover:bg-slate-300 disabled:bg-slate-300 flex items-center gap-2 bg-amber-400 py-2 px-4 rounded-lg text-white"
-          >
-            <svg
-              class="stroke-white w-5 inline-block"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  class=""
-                  d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                ></path>
-                <path
-                  class=""
-                  d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                ></path>
-              </g>
-            </svg>
-            Añadir relación
-          </button>
-          <div class="flex justify-center">
-            <button
-              id="deleteRelationButton"
-              disabled
-              onclick="DeleteRelation()"
-              class="flex bg-red-500 text-white p-1 rounded hover:bg-red-400 disabled:hover:bg-slate-300 disabled:bg-slate-300"
-            >
-              <span>Delete relation</span>
-              <svg
-                class="text-md w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                stroke="#ffffff"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M10 12L14 16M14 12L10 16M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
-                    stroke="#ffffff"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
-              </svg>
-            </button>
-          </div>
-        </div>
+     
 
         <!--###################################################### 
             ##################### Modals ######################### 
             ###################################################### -->
         <section class="modals border border-dashed border-1 border-slate-400 my-5">
           <!-- Add node -->
-          <form id="add-node-container" class="flex justify-center hidden my-3">
+          <form id="add-node-container" class="flex justify-center my-3">
             <label for="node-name">Nombre del estado</label>
             <input
               placeholder="Enter the Node name"
@@ -271,7 +107,7 @@
                   ></path>
                 </g>
               </svg>
-              Añadir Nodo
+              Añadir Estado
             </button>
             <div>
               <label for="">Initial State</label>
@@ -280,63 +116,6 @@
             <div>
               <label for="">Final State</label>
               <input type="checkbox" name="addNodeFinalState" id="initialStateCheckbox" >
-            </div>
-          </form>
-
-          <!-- Edit node -->
-          <form
-            id="edit-node-container"
-            class="py-2 flex gap-2 justify-center hidden"
-          >
-            <select
-              data="nodes"
-              id="edit-select-node"
-              class="w-40 bg-slate-200 p-1 rounded-md hover:bg-slate-300"
-            ></select>
-            <label class="text-right" for="new-node-name">Nombre nuevo</label>
-            <input
-              placeholder="Valor"
-              name="new-node-name"
-              id="editInputNodeName"
-              class="bg-slate-100 py-1 px-2"
-            />
-            <button
-              onclick="EditNode()"
-              class="text-white flex items-center bg-amber-400 py-1 px-3 rounded-md hover:bg-amber-500"
-            >
-              <svg
-                class="w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M4.89163 13.2687L9.16582 17.5427L18.7085 8"
-                    stroke="#ffffff"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
-              </svg>
-
-              Editar nodo
-            </button>
-
-            <div>
-              <label for="">Initial State</label>
-              <input type="checkbox" name="initialState" id="initialStateCheckbox" >
-            </div>
-            <div>
-              <label for="">Final State</label>
-              <input type="checkbox" name="initialState" id="initialStateCheckbox" >
             </div>
           </form>
 
@@ -382,59 +161,26 @@
           </form>
 
           <!-- Add Relation -->
-          <form
-            class="flex py-3 justify-center hidden"
-            id="add-relation-container"
-          >
-            <label for="">from</label>
-            <select
-              data="nodes"
-              id="from-relation"
-              class="w-40 mx-2 bg-slate-200 hover:bg-slate-100 rounded-md"
-            ></select>
-            <input
-              type="text"
-              placeholder="Valor"
-              id="adding-relation-name"
-              class="mr-2 w-32 text-center bg-slate-100"
-            />
-            <label for="">to</label>
-            <select
-              data="nodes"
-              id="to-relation"
-              class="w-40 mx-2 bg-slate-200 hover:bg-slate-100 rounded-md"
-            ></select>
-            <button
-              onclick="AddRelation()"
-              class="flex justify-center items-center bg-amber-400 py-1 px-3 rounded-md text-white"
-            >
-              <svg
-                class="w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M4.89163 13.2687L9.16582 17.5427L18.7085 8"
-                    stroke="#ffffff"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </g>
-              </svg>
-
-              Añadir relacion
-            </button>
-          </form>
           
+          <div>
+
+              <p>Agrega las relaciones en la forma</p>
+              <p>
+                <p>(q0 , a) -> q1</p>
+                <p>(q1 , b) -> q2</p>
+                <p>(q2 , c) -> q3</p>
+                Debes tener en cuenta que los estados deben existir previamente
+              </p>
+          </div>
+          <textarea name="" id="transicionesTextArea" class="w-96 h-48 p-4  outline outline-2 outline-offset-2" placeholder="Agrega aqui tus transiciones"></textarea>
+          <button
+            action="edit"
+            class="select-none text-sm hover:bg-blue-400 flex items-center gap-2 bg-blue-300 py-2 px-4 rounded-lg text-white hover:cursor-pointer"
+            onclick="parseTransitions()"
+          >
+          
+            Create Transitions
+          </button>
         </section>
       </section>
 
