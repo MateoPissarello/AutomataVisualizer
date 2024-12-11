@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Máquina de Turing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .cabezal {
+            background-color: yellow;
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-12">
+
+        <!-- Título Principal -->
+        <h1 class="text-4xl font-bold text-center mb-8 text-blue-600">Simulación de Máquina de Turing</h1>
+
+        <!-- Formulario de Ingreso del Lenguaje -->
+        <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Ingrese un Lenguaje</h2>
+            <form id="lenguaje-form" class="space-y-4">
+                <input type="text" id="lenguaje" name="lenguaje" placeholder="Ejemplo: aabbb, abba"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit"
+                    class="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Crear Máquina de Turing
+                </button>
+            </form>
+        </div>
+
+        <!-- Entrada de la Cadena para Simular -->
+        <div id="entrada-cadena" class="mt-4 hidden">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Ingrese una cadena para simular</h3>
+            <input type="text" id="cadena-input" placeholder="Ejemplo: abba"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Resultados de la Máquina de Turing -->
+        <div id="resultado-maquina-turing" class="mt-8 w-full max-w-lg hidden bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Máquina de Turing Generada</h2>
+            <p id="descripcion-maquina" class="text-gray-600 mb-4"></p>
+
+
+            <!-- Botón para Simular Ejecución -->
+            <button id="simular" disabled
+                class="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                Simular Ejecución
+            </button>
+
+            <!-- Resultados de la Simulación -->
+            <div id="resultado-simulacion" class="mt-4 text-gray-600">
+            </div>
+
+            <!-- Pasos de la Simulación -->
+            <div id="pasos"
+                class="mt-4 bg-gray-100 p-4 rounded-md font-mono text-sm whitespace-pre-wrap overflow-x-auto">
+                <strong>Pasos:</strong>
+                <pre id="pasos-simulacion"></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="scripts/maquinaturing.js"></script>
+</body>
+
+</html>
