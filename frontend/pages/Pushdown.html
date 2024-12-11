@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Autómata de Pila Interactivo</title>
+    <style>
+        :root {
+            --primary-color: #00f2fe;
+            --secondary-color: #4facfe;
+            --accent-color: #7928ca;
+            --background-dark: #0f0c29;
+            --text-light: #e0e0e0;
+            --disabled-color: #4f6d7a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--background-dark), var(--secondary-color), var(--primary-color));
+            background-size: 400% 400%;
+            color: var(--text-light);
+            min-height: 100vh;
+            animation: GradientBackground 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes GradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 2rem auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        header {
+            background: rgba(15, 15, 50, 0.7);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .config-section, .visualization-section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            transition: transform 0.3s ease;
+        }
+
+        .config-section:hover, .visualization-section:hover {
+            transform: scale(1.02);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        button:disabled {
+            background-color: var(--disabled-color);
+            cursor: not-allowed;
+        }
+
+        #visualization {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        #current-state {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .stack-container {
+            margin: 1.5rem 0;
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 150px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #transitions-log {
+            max-height: 200px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        #transitions-log li {
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+            transition: background 0.3s ease;
+        }
+
+        #transitions-log li:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            overflow: auto;
+            padding-top: 60px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        p {
+            font-size: 1rem;
+            margin: 1rem 0;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Autómata de Pila Interactivo</h1>
+    </header>
+
+    <main class="container">
+        <section class="config-section">
+            <h2>Configuración</h2>
+            <label for="language">Definir Lenguaje:</label>
+            <input type="text" id="language" placeholder="a^n b^n" value="a^n b^n">
+
+            <label for="input-string">Cadena de Entrada:</label>
+            <input type="text" id="input-string" placeholder="aabb">
+
+            <button onclick="initializePDA()">Generar Autómata</button>
+            <button onclick="processInput()">Procesar</button>
+            <button onclick="clearAll()">Limpiar</button>
+            <button onclick="openInstructions()">Instrucciones</button>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Visualización</h2>
+            <div id="visualization">
+                <h3>Estado Actual: <span id="current-state">-</span></h3>
+                <div class="stack-container">
+                    <h4>Pila</h4>
+                    <div class="stack" id="stack"></div>
+                </div>
+                <ul id="transitions-log"></ul>
+            </div>
+        </section>
+    </main>
+
+    <div id="instructionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeInstructions()">&times;</span>
+            <h2>Instrucciones</h2>
+            <p>Este es un autómata de pila interactivo. Introduzca una cadena de entrada y defina las reglas del lenguaje para que el autómata la procese. El autómata cambiará de estado y mostrará la evolución de la pila mientras procesa la cadena.</p>
+        </div>
+    </div>
+
+    <script>
+        let stack = [];
+        let currentState = 'q0';
+        let transitions = [];
+        let inputString = '';
+        let language = '';
+
+        function initializePDA() {
+            inputString = document.getElementById('input-string').value;
+            language = document.getElementById('language').value;
+
+            stack = [];
+            currentState = 'q0';
+            transitions = [];
+
+            processInput();  // Procesar inmediatamente después de inicializar
+        }
+
+        function processInput() {
+            let stateLog = [];
+            let input = inputString;
+            let state = currentState;
+            let log = [];
+
+            // Lógica del autómata de pila (adaptada para los lenguajes)
+            switch (language.toLowerCase()) {
+                case 'a^n b^n':
+                    // Estado inicial y procesamiento de la cadena
+                    for (let symbol of input) {
+                        if (symbol === 'a' && stack.length < 5) {
+                            stack.push('a');  // Agregar 'a' a la pila
+                            log.push(`Push a: Estado ${state}`);
+                            state = 'q1';  // Cambiar de estado después de una transición
+                        } else if (symbol === 'b' && stack.length > 0 && stack[stack.length - 1] === 'a') {
+                            stack.pop();  // Quitar 'a' de la pila
+                            log.push(`Pop b: Estado ${state}`);
+                            state = 'q2';  // Cambiar de estado después de una transición
+                        } else {
+                            log.push(`Rechazo: Estado ${state}`);
+                            break;
+                        }
+                    }
+                    break;
+                case 'a^n b^n c^n':
+                    // Estado inicial y procesamiento de la cadena para el lenguaje 'a^n b^n c^n'
+                    for (let symbol of input) {
+                        if (symbol === 'a' && stack.length < 5) {
+                            stack.push('a');
+                            log.push(`Push a: Estado ${state}`);
+                            state = 'q1';
+                        } else if (symbol === 'b' && stack.length > 0 && stack[stack.length - 1] === 'a') {
+                            stack.pop();
+                            log.push(`Pop b: Estado ${state}`);
+                            state = 'q2';
+                        } else if (symbol === 'c' && stack.length > 0 && stack[stack.length - 1] === 'b') {
+                            stack.pop();
+                            log.push(`Pop c: Estado ${state}`);
+                            state = 'q3';
+                        } else {
+                            log.push(`Rechazo: Estado ${state}`);
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    log.push(`Lenguaje no reconocido: Estado ${state}`);
+                    break;
+            }
+
+            // Mostrar el estado actual y la pila
+            document.getElementById('current-state').innerText = state;
+            document.getElementById('stack').innerHTML = stack.join('<br>');
+            document.getElementById('transitions-log').innerHTML = log.map((entry) => `<li>${entry}</li>`).join('');
+        }
+
+
+        function openInstructions() {
+            document.getElementById("instructionsModal").style.display = "block";
+        }
+
+        function closeInstructions() {
+            document.getElementById("instructionsModal").style.display = "none";
+        }
+
+        function clearAll() {
+            document.getElementById('input-string').value = '';
+            document.getElementById('language').value = '';
+            document.getElementById('current-state').innerText = '-';
+            document.getElementById('stack').innerHTML = '';
+            document.getElementById('transitions-log').innerHTML = '';
+            stack = [];
+            currentState = 'q0';
+            transitions = [];
+        }
+    </script>
+</body>
+</html>
