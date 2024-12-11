@@ -83,7 +83,7 @@ function AddNode(idparam = undefined) {
     nodes.add({
       id,
       label: id.toString(),
-      color: "#5FDABD",
+      color: color,
       font: { color: "white" },
     });
 
