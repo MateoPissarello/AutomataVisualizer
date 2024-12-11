@@ -10,7 +10,7 @@
             --accent-color: #7928ca;
             --background-dark: #0f0c29;
             --text-light: #e0e0e0;
-            --disabled-color: #4f6d7a; /* Color para botones deshabilitados */
+            --disabled-color: #4f6d7a;
         }
 
         * {
@@ -180,10 +180,10 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7); /* Darkened background */
+            background-color: rgba(0, 0, 0, 0.7);
             overflow: auto;
             padding-top: 60px;
-            backdrop-filter: blur(5px); /* Blur effect */
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
@@ -246,10 +246,8 @@
 
             <button onclick="initializePDA()">Generar Autómata</button>
             <button onclick="processInput()">Procesar</button>
+            <button onclick="clearAll()">Limpiar</button>
             <button onclick="openInstructions()">Instrucciones</button>
-
-            <!-- Contenedor de botones de estado dinámicos -->
-            <div id="state-buttons-container"></div>
         </section>
 
         <section class="visualization-section">
@@ -258,103 +256,114 @@
                 <h3>Estado Actual: <span id="current-state">-</span></h3>
                 <div class="stack-container">
                     <h4>Pila</h4>
-                    <div class="stack" id="stack-visualization"></div>
+                    <div class="stack" id="stack"></div>
                 </div>
-                <h4>Transiciones Aplicadas</h4>
                 <ul id="transitions-log"></ul>
             </div>
         </section>
     </main>
 
-    <!-- Modal de instrucciones -->
     <div id="instructionsModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeInstructions()">&times;</span>
             <h2>Instrucciones</h2>
-            <p>Para generar un autómata de pila, introduce el lenguaje y la cadena de entrada.</p>
-            <p>El autómata realizará las transiciones y actualizará el estado y la pila en función de la cadena.</p>
+            <p>Este es un autómata de pila interactivo. Introduzca una cadena de entrada y defina las reglas del lenguaje para que el autómata la procese. El autómata cambiará de estado y mostrará la evolución de la pila mientras procesa la cadena.</p>
         </div>
     </div>
 
     <script>
-        const BASE_WS_URL = "ws://localhost:8000"; // o wss:// si es conexión segura
+        let stack = [];
+        let currentState = 'q0';
+        let transitions = [];
+        let inputString = '';
+        let language = '';
 
         function initializePDA() {
-            const language_type = document.getElementById('language').value.trim();
-            const input_string = document.getElementById('input-string').value.trim();
-            let aut_id = 0;
+            inputString = document.getElementById('input-string').value;
+            language = document.getElementById('language').value;
 
-            if (language_type === "" || input_string === "") {
-                alert("Por favor, ingresa tanto el lenguaje como la cadena de entrada.");
-                return;
-            }
+            stack = [];
+            currentState = 'q0';
+            transitions = [];
 
-            // Usando WebSocket
-            const socket = new WebSocket(`${BASE_WS_URL}/pushdown/initialize/${aut_id}`);
-
-            socket.onopen = () => {
-                console.log('Conexión WebSocket establecida');
-                socket.send(JSON.stringify({ language_type, input_string }));
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                updateVisualization(data);
-            };
-
-            socket.onerror = (error) => {
-                console.error('Error de WebSocket:', error);
-            };
-
-            socket.onclose = () => {
-                console.log('Conexión WebSocket cerrada');
-            };
-
-            aut_id += 1;
+            processInput();  // Procesar inmediatamente después de inicializar
         }
 
         function processInput() {
-            const input_string = document.getElementById('input-string').value;
+            let stateLog = [];
+            let input = inputString;
+            let state = currentState;
+            let log = [];
 
-            const socket = new WebSocket(`${BASE_WS_URL}/processInput`);
+            // Lógica del autómata de pila (adaptada para los lenguajes)
+            switch (language.toLowerCase()) {
+                case 'a^n b^n':
+                    // Estado inicial y procesamiento de la cadena
+                    for (let symbol of input) {
+                        if (symbol === 'a' && stack.length < 5) {
+                            stack.push('a');  // Agregar 'a' a la pila
+                            log.push(`Push a: Estado ${state}`);
+                            state = 'q1';  // Cambiar de estado después de una transición
+                        } else if (symbol === 'b' && stack.length > 0 && stack[stack.length - 1] === 'a') {
+                            stack.pop();  // Quitar 'a' de la pila
+                            log.push(`Pop b: Estado ${state}`);
+                            state = 'q2';  // Cambiar de estado después de una transición
+                        } else {
+                            log.push(`Rechazo: Estado ${state}`);
+                            break;
+                        }
+                    }
+                    break;
+                case 'a^n b^n c^n':
+                    // Estado inicial y procesamiento de la cadena para el lenguaje 'a^n b^n c^n'
+                    for (let symbol of input) {
+                        if (symbol === 'a' && stack.length < 5) {
+                            stack.push('a');
+                            log.push(`Push a: Estado ${state}`);
+                            state = 'q1';
+                        } else if (symbol === 'b' && stack.length > 0 && stack[stack.length - 1] === 'a') {
+                            stack.pop();
+                            log.push(`Pop b: Estado ${state}`);
+                            state = 'q2';
+                        } else if (symbol === 'c' && stack.length > 0 && stack[stack.length - 1] === 'b') {
+                            stack.pop();
+                            log.push(`Pop c: Estado ${state}`);
+                            state = 'q3';
+                        } else {
+                            log.push(`Rechazo: Estado ${state}`);
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    log.push(`Lenguaje no reconocido: Estado ${state}`);
+                    break;
+            }
 
-            socket.onopen = () => {
-                socket.send(JSON.stringify({ input_string }));
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                updateVisualization(data);
-            };
-
-            socket.onerror = (error) => {
-                console.error('Error de WebSocket:', error);
-            };
-
-            socket.onclose = () => {
-                console.log('Conexión WebSocket cerrada');
-            };
+            // Mostrar el estado actual y la pila
+            document.getElementById('current-state').innerText = state;
+            document.getElementById('stack').innerHTML = stack.join('<br>');
+            document.getElementById('transitions-log').innerHTML = log.map((entry) => `<li>${entry}</li>`).join('');
         }
 
-        function updateVisualization(data) {
-            document.getElementById("current-state").textContent = data.current_state;
-            updateStack(data.stack);
-            updateTransitionsLog(data.transitions);
+
+        function openInstructions() {
+            document.getElementById("instructionsModal").style.display = "block";
         }
 
-        function updateStack(stack) {
-            const stackDiv = document.getElementById("stack-visualization");
-            stackDiv.innerHTML = stack.join(" ");
+        function closeInstructions() {
+            document.getElementById("instructionsModal").style.display = "none";
         }
 
-        function updateTransitionsLog(transitions) {
-            const logDiv = document.getElementById("transitions-log");
-            logDiv.innerHTML = "";
-            transitions.forEach(transition => {
-                const li = document.createElement("li");
-                li.textContent = transition;
-                logDiv.appendChild(li);
-            });
+        function clearAll() {
+            document.getElementById('input-string').value = '';
+            document.getElementById('language').value = '';
+            document.getElementById('current-state').innerText = '-';
+            document.getElementById('stack').innerHTML = '';
+            document.getElementById('transitions-log').innerHTML = '';
+            stack = [];
+            currentState = 'q0';
+            transitions = [];
         }
     </script>
 </body>
